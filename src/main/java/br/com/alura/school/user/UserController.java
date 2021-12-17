@@ -21,7 +21,9 @@ class UserController {
 
     @GetMapping("/users/{username}")
     ResponseEntity<UserResponse> userByUsername(@PathVariable("username") String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, format("User %s not found", username)));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, format("User %s not found", username)));
+
         return ResponseEntity.ok(new UserResponse(user));
     }
 

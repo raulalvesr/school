@@ -14,4 +14,5 @@ class UserResponse {
         this.username = user.getUsername();
         this.email = user.getEmail();
     }
+
 }

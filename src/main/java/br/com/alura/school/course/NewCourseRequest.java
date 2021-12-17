@@ -36,4 +36,5 @@ class NewCourseRequest {
     Course toEntity() {
         return new Course(code, name, description);
     }
+
 }

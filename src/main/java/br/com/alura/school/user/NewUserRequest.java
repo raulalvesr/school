@@ -34,4 +34,5 @@ class NewUserRequest {
     User toEntity() {
         return new User(username, email);
     }
+
 }

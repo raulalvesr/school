@@ -23,14 +23,17 @@ class EnrollmentController {
     private final EnrollmentRepository enrollmentRepository;
     private final UserRepository userRepository;
 
-    EnrollmentController(CourseRepository courseRepository, EnrollmentRepository enrollmentRepository, UserRepository userRepository) {
+    EnrollmentController(CourseRepository courseRepository,
+                         EnrollmentRepository enrollmentRepository,
+                         UserRepository userRepository) {
         this.courseRepository = courseRepository;
         this.enrollmentRepository = enrollmentRepository;
         this.userRepository = userRepository;
     }
 
     @PostMapping("/courses/{courseCode}/enroll")
-    ResponseEntity<Void> newEnrollment(@PathVariable("courseCode") String courseCode, @RequestBody @Valid NewEnrollmentRequest newEnrollmentRequest) {
+    ResponseEntity<Void> newEnrollment(@PathVariable("courseCode") String courseCode,
+                                       @RequestBody @Valid NewEnrollmentRequest newEnrollmentRequest) {
         User user = userRepository.findByUsername(newEnrollmentRequest.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, format("User with username \"%s\" not found", newEnrollmentRequest.getUsername())));
 
@@ -38,7 +41,6 @@ class EnrollmentController {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, format("Course with code \"%s\" not found", courseCode)));
 
         boolean userIsAlreadyEnrolledInCourse = enrollmentRepository.existsByUserAndCourse(user, course);
-
         if (userIsAlreadyEnrolledInCourse)
             throw new ResponseStatusException(BAD_REQUEST, "User is already enrolled in this course");
 
