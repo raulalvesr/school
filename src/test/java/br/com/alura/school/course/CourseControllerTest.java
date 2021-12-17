@@ -2,6 +2,10 @@ package br.com.alura.school.course;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -67,6 +71,26 @@ class CourseControllerTest {
                 .content(jsonMapper.writeValueAsString(newCourseRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/courses/java-2"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            ", course-name",
+            "'', course-name",
+            "'    ', course-name",
+            "code, ",
+            "code, ''",
+            "code, '    '",
+            "a-code-that-is-really-really-really-big, course-name",
+            "code , a-name-that-is-really-really-really-big",
+    })
+    void should_validate_bad_courses_requests(String code, String name) throws Exception {
+        NewCourseRequest newCourseRequest = new NewCourseRequest(code, name, "a very good course, trust me");
+
+        mockMvc.perform(post("/courses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonMapper.writeValueAsString(newCourseRequest)))
+                .andExpect(status().isBadRequest());
     }
 
 }
